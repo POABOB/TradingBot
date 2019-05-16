@@ -239,13 +239,18 @@ def Singnal_Operate(STATUS, signal):
         signal = None
         print(datetime.now(),'目前已作多~')
     elif signal == 0 and STATUS == 1:
-        signal = 0
         print(datetime.now(),'要平多囉~')
     elif signal == 0 and STATUS == -1:
-        signal = 0
         print(datetime.now(),'要平空囉~')
     elif signal == 1 and STATUS == 0:
         print(datetime.now(),'要做多囉~')
     elif signal == -1 and STATUS == 0:
         print(datetime.now(),'要做空囉~')
+    elif signal == -1 and STATUS == 1:
+        signal = -0.5
+        print(datetime.now(),'要平多做空囉~')
+    elif signal == 1 and STATUS == -1:
+        signal = 0.5
+        print(datetime.now(),'要平空做多囉~')
+
     return signal

@@ -52,7 +52,7 @@ def Operate(exchange, email_title, email_content, operate, symbol, freeUSD, used
         price = exchange.fetch_ticker(symbol)['bid']  # 获取买一价格
         # 下单
         place_order(exchange, order_type='limit', buy_or_sell='sell', symbol=symbol, price=price * 0.99,
-                    amount=(freeUSD / price * 0.99))
+                    amount=(freeUSD / price * 0.99) * 2)
         # 邮件标题
         email_title += '_做空_' + symbol
         # 邮件内容
@@ -81,7 +81,7 @@ def Operate(exchange, email_title, email_content, operate, symbol, freeUSD, used
 
         # 获取最新的卖出价格
         place_order(exchange, order_type='limit', buy_or_sell='buy', symbol=symbol, price=price * 1.01,
-                    amount=(freeUSD / price * 1.01))
+                    amount=(freeUSD / price * 1.01)  * 2)
         # 邮件标题
         email_title += '_做多_' + symbol
         # 邮件内容

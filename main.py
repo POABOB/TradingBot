@@ -41,11 +41,12 @@ time_interval = '15m' # 間隔運行時間，不能低於5min
 symbol = 'ETH/USD' # 交易品種
 base_coin = symbol.split('/')[-1]   # 斜槓後的貨幣 => USD
 trade_coin = symbol.split('/')[0]   # 斜槓前的貨幣 => ETH
-STATUS = 1    # 辨識買跌買漲
-para = [370, 2.0] # 策略參數 => 布林通道策略(天數,標準差)
+STATUS = 0    # 辨識買跌買漲
+para1 = [100, 2.0] # 策略參數 => 布林通道策略(天數,標準差)
+para2 = [7, 2];
 original_money=914
 # =====
-
+times = 1
 # =====資料抓取
 print('系統資料庫更新中...')
 now = datetime.now() + timedelta(seconds=61)
@@ -58,6 +59,15 @@ print('============================')
 # =====主程序
 while True:
     # =====開啟新信件
+    if(times == 5)
+        print('系統資料庫更新中...')
+        now = datetime.now() + timedelta(seconds=61)
+        since = int((now - timedelta(days=para[0])).timestamp()) * 1000
+        now = int(now.timestamp()) * 1000
+        df = GetData(since, now)
+        print('============================')
+        times = 1
+
     email_title = '耿映翔的機器人'
     email_content = ''
     # =====
@@ -120,18 +130,31 @@ while True:
     # =====
 
     # =====Trade
+    #空
     if STATUS == 0 and signal == -1:
         email_content = Operate(exchange, email_title, email_content,'Sell', symbol, USD, used_USD)
         STATUS = -1
+    #平空
     elif STATUS == -1 and signal == 0:
         email_content = Operate(exchange, email_title, email_content,'SellFilled', symbol, USD, used_USD)
         STATUS = 0
+    #多
     elif STATUS == 0 and signal == 1:
         email_content = Operate(exchange, email_title, email_content,'Buy', symbol, USD, used_USD)
         STATUS = 1
+    #平多
     elif STATUS == 1 and signal == 0:
         email_content = Operate(exchange, email_title, email_content,'BuyFilled', symbol, USD, used_USD)
         STATUS = 0
+    #平空做多
+    elif signal == -0.5 and STATUS == 1:
+        email_content = Operate(exchange, email_title, email_content,'SellFilled', symbol, USD, used_USD)
+        email_content = Operate(exchange, email_title, email_content,'Buy', symbol, USD, used_USD)
+    #平多做空
+    elif signal == 0.5 and STATUS == -1:
+        email_content = Operate(exchange, email_title, email_content,'BuyFilled', symbol, USD, used_USD)
+        email_content = Operate(exchange, email_title, email_content,'Sell', symbol, USD, used_USD)
+        
     # =====
     
     # =====倉位
@@ -155,6 +178,7 @@ while True:
     print(email_title)
     print(email_content)
     print('=====本次運行完畢，30秒後繼續運行=====\n')
+    times++
     sleep(30 * 1)
 # =====
 
